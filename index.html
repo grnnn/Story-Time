@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="shortcut icon" href="res/logo.ico" >
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Story Time</title>
+
+    <!-- Bootstrap -->
+    <link href="lib/css/bootstrap.css" rel="stylesheet">
+    <!--Jquery UI-->
+    <link href="lib/css/jquery-ui.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!--Custom classes go here-->
+    <style>
+
+
+    </style>
+
+
+  </head>
+  <body style="background-color:LightBlue;">
+
+    <div class="panel panel-default" style="width:85%; margin-left: auto; margin-right: auto; margin-top: 20px;">
+      <div class="panel-body">
+        <h4> Welcome to Story Time. Heat up some tea and make yourself at home.</h4>
+        <h4> Here at story time, users contribute to and help create stories.</h4>
+      </div>
+    </div>
+
+    <div class="panel panel-default" style="width:85%; margin-left: auto; margin-right: auto; margin-top: 20px;">
+      <div class="panel-body">
+        <h1>Active Stories</h1>
+        <hr>
+        <button class="btn btn-default btn-lg" id="AddStory" disabled>+ Add Story</button>
+      </div>
+    </div>
+
+    <div class="modal fade" id="myModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">Add Story</h4>
+          </div>
+          <div class="modal-body">
+            <b>Title: </b><input type="text" id="title"> <br>
+            <p>
+                <label for="amount">Maximum number of characters per entry: </label>
+                <input type="number" min="1" max="3000" id="amount" style="border:0; color:#f6931f; font-weight:bold;">
+            </p>
+            <div id="slider"></div>
+            <div class="row"><div class="col-md-6"><div style="text-align:left; border:0; color:#f6931f; font-weight:bold;">1</div></div>
+            <div class="col-md-6"><div style="text-align:right; border:0; color:#f6931f; font-weight:bold;">3000</div></div> </div>
+            length of <b style="color:#f6931f; font-weight:bold;">10</b>: a few words <br>
+            length of <b style="color:#f6931f; font-weight:bold;">50</b>: a sentence <br>
+            length of <b style="color:#f6931f; font-weight:bold;">500</b>: a paragraph <br> <br>
+
+            <b>End story on: <br></b>
+            <input type="radio" name="endType" value="date" checked> Date <input type="date" id="timeAndDate"><br>
+            <input type="radio" name="endType" value="x"> x Number of Entries <input type="number" min="2" max="100" value="20">
+
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Add Story</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="lib/js/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="lib/js/bootstrap.min.js"></script>
+    <!--Moment.js, for time stuff-->
+    <script src="lib/js/moment.js"></script>
+    <!--JqueryUI, for sliders-->
+    <script src="lib/js/jquery-ui.js"></script>
+
+    <script type="text/javascript">
+
+    //Slider functionality
+    $(function() {
+        $("#slider").slider({
+            min: 1,
+            max: 3000,
+            value: 20,
+            slide: function( event, ui ) {
+                $( "#amount" ).val(ui.value);
+            }
+        });
+        $( "#amount" ).val( $( "#slider" ).slider( "value" ));
+    });
+
+    //number input functionality
+    $("#amount").change(function(){
+        if(parseInt($(this).val()) === NaN){
+            $(this).val(1);
+            return;
+        }
+        if(parseInt($(this).val()) < 1){
+            $(this).val(1);
+        }
+        if(parseInt($(this).val()) > 3000){
+            $(this).val(3000);
+        }
+        $("#slider").slider("value", parseInt($(this).val()) );
+    });
+
+    //click listener for add story button
+    $("#AddStory").click(function(){
+
+
+
+        $('#myModal').modal();
+
+    });
+
+
+    //Activate the button if it's after a certain time
+    $.getJSON("res/new-story.json", function(data){
+       if(moment(data.startDate, "MM/DD/YYYY h:mm a").isBefore()){
+           $("#AddStory").removeAttr("disabled");
+       }
+    });
+
+    </script>
+
+  </body>
+</html>
