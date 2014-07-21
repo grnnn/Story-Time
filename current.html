@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="shortcut icon" href="res/logo.ico" >
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Story Time</title>
+
+    <!-- Bootstrap -->
+    <link href="lib/css/bootstrap.css" rel="stylesheet">
+    <!--Jquery UI-->
+    <link href="lib/css/jquery-ui.css" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!--Custom classes go here-->
+    <style>
+
+
+    </style>
+
+    <!--Put stuff in here-->
+
+
+  </head>
+  <body style="background-color:LightBlue;">
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="lib/js/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="lib/js/bootstrap.min.js"></script>
+    <!--Moment.js, for time stuff-->
+    <script src="lib/js/moment.js"></script>
+    <!--JqueryUI, for sliders-->
+    <script src="lib/js/jquery-ui.js"></script>
+
+    <script type="text/javascript">
+
+        var QueryString = function () {
+          // This function is anonymous, is executed immediately and
+          // the return value is assigned to QueryString!
+          var query_string = {};
+          var query = window.location.search.substring(1);
+          var vars = query.split("&");
+          for (var i=0;i<vars.length;i++) {
+            var pair = vars[i].split("=");
+                // If first entry with this name
+            if (typeof query_string[pair[0]] === "undefined") {
+              query_string[pair[0]] = pair[1];
+                // If second entry with this name
+            } else if (typeof query_string[pair[0]] === "string") {
+              var arr = [ query_string[pair[0]], pair[1] ];
+              query_string[pair[0]] = arr;
+                // If third or later entry with this name
+            } else {
+              query_string[pair[0]].push(pair[1]);
+            }
+          }
+            return query_string;
+        } ();
+
+        var path = QueryString.u.replace(/%2F/g, "/");
+
+        //Don't worry about the stuff ^ up there, it's to get the correct pathname
+
+        //This will pring out the correct path to the passed-in json file
+        console.log(path);
+
+        //Pull from json from location and represent the json somehow in the html above
+        //List of things I need:
+        //  -The story needs to be pulled from the passed in location every 30 seconds ( $.getJSON(location, function(){ //do stuff }) useful for this)
+        //  -The story needs to be represented on the screen and updated accordingly (call function regularly with window.setTimeout(functionName, numOfMilliseconds) )
+        //  -There needs to be an input box with a hard limit on character-length (Look up <input> html types, maybe you have to do some scripting, idk)
+        //  -If you're feeling really good about your js abilities, use the createjson.php to actually submit updates to the json file for this story (reference index.html for this)
+    </script>
+
+  </body>
+</html>

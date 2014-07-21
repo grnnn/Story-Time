@@ -66,13 +66,13 @@
 
             <b>End story on: <br></b>
             <input type="radio" name="endType" value="date" checked> Date <input type="date" id="timeAndDate"><br>
-            <input type="radio" name="endType" value="x"> x Number of Entries <input type="number" min="2" max="100" value="20">
+            <input type="radio" name="endType" value="x"> x Number of Entries <input type="number" id="numEntries" min="2" max="100" value="20">
 
 
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Add Story</button>
+            <button type="button" class="btn btn-primary" id="newStory">Add Story</button>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
@@ -120,8 +120,6 @@
     //click listener for add story button
     $("#AddStory").click(function(){
 
-
-
         $('#myModal').modal();
 
     });
@@ -134,6 +132,88 @@
        }
     });
 
+    //Listener for the add Story button
+    $("#newStory").click(function(){
+        var newStory = {};
+        //get the title if it's not empty
+        if($("#title").val() !== ""){
+            newStory.title = $("#title").val();
+        } else {
+            alert("Please give your story a title");
+            return;
+        }
+        //get the maxChar if it's not empty
+        newStory.maxChar = $("#slider").slider("value");
+
+        //check which radio is checked
+        if( $( "input:radio[name=endType]:checked" ).val() == "date"){
+            var endsOnDate = true;
+        } else {
+            var endsOnDate = false;
+        }
+
+        newStory.endsOnDate = endsOnDate;
+
+        if(endsOnDate){
+
+            if( $("#timeAndDate").val() !== ""){
+                newStory.endsAt = $("#timeAndDate").val();
+            } else{
+                alert("Please set a date for your story");
+                return;
+            }
+
+        } else {
+
+            if( $("#numEntries").val() > 1 && $("#numEntries").val() < 101){
+                newStory.endsAt = $("#numEntries").val();
+            } else{
+                alert("Please set a number of entries for your story between 2 and 100");
+                return;
+            }
+
+        }
+
+        newStory.story = [];
+        newStory.lastResponder = "";
+
+        var newStoryString = JSON.stringify(newStory, " ");
+        var currentTime = new Date().getTime();
+        var fileName = "res/stories/" + currentTime + ".json";
+
+        var data = new FormData();
+        data.append("data" , newStoryString);
+        data.append("file" , fileName);
+        var xhr = (window.XMLHttpRequest) ? new XMLHttpRequest() : new activeXObject("Microsoft.XMLHTTP");
+        xhr.open( 'post', 'createjson.php', true );
+        xhr.send(data);
+
+        console.log("Exporting");
+
+        //first set up new json with next time of posting
+        //Do this later
+
+        //function which calls itself if there is no json
+        openJSON(fileName);
+
+    });
+
+    var currentTime;
+
+    function openJSON(location){
+        $.ajax({
+            url: location,
+            type:'HEAD',
+            error: function()
+            {
+                window.setTimeout(function(){openJSON(location);}, 100);
+            },
+            success: function()
+            {
+                window.location.href = "current.html?u=" + encodeURIComponent(location);
+            }
+        });
+    }
     </script>
 
   </body>
